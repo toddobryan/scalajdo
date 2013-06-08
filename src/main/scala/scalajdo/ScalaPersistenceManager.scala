@@ -32,6 +32,8 @@ class ScalaPersistenceManager(val jpm: JDOPersistenceManager) {
     }
   }
   
+  def isClosed(): Boolean = jpm.isClosed()
+  
   def close() {
     jpm.close()
   }

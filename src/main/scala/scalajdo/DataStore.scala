@@ -11,7 +11,7 @@ object DataStore {
     new ThreadLocal[ScalaPersistenceManager]()
   
   def pm: ScalaPersistenceManager = {
-    if (threadLocalPersistenceManager.get() == null) {
+    if (threadLocalPersistenceManager.get() == null || threadLocalPersistenceManager.get().isClosed) {
       threadLocalPersistenceManager.set(newPm)
     }
     threadLocalPersistenceManager.get()
