@@ -12,11 +12,23 @@ object DataStore {
   
   def pm: ScalaPersistenceManager = {
     if (threadLocalPersistenceManager.get() == null) {
-      threadLocalPersistenceManager.set(new ScalaPersistenceManager(pmf.getPersistenceManager().asInstanceOf[JDOPersistenceManager]))
+      threadLocalPersistenceManager.set(newPm)
     }
     threadLocalPersistenceManager.get()
   }
   
-  def newPm: ScalaPersistenceManager =
+  def withTransaction[A](block: (ScalaPersistenceManager => A)): A = {
+    implicit val pm: ScalaPersistenceManager = DataStore.pm
+    pm.beginTransaction()
+    val r = block(pm)
+    pm.commitTransaction()
+    r
+  }
+
+  def execute[A](block: (ScalaPersistenceManager => A)): A = {
+    block(pm)
+  }
+  
+  private[DataStore] def newPm: ScalaPersistenceManager =
     new ScalaPersistenceManager(pmf.getPersistenceManager().asInstanceOf[JDOPersistenceManager])
 }

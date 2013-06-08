@@ -11,10 +11,6 @@ class ScalaPersistenceManager(val jpm: JDOPersistenceManager) {
     jpm.currentTransaction.begin()
   }
   
-  def commit() {
-    jpm.currentTransaction.commit()
-  }
-  
   def commitTransaction() {
     try {
       jpm.currentTransaction.commit()
