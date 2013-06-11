@@ -4,17 +4,27 @@ import javax.jdo.JDOHelper
 import org.datanucleus.api.jdo.{JDOPersistenceManager, JDOPersistenceManagerFactory}
 
 object DataStore {
-  private[this] lazy val pmf: JDOPersistenceManagerFactory = 
-    JDOHelper.getPersistenceManagerFactory("datastore.props").asInstanceOf[JDOPersistenceManagerFactory]
+  private[this] var _pmf: JDOPersistenceManagerFactory = _
+  
+  def pmf(): JDOPersistenceManagerFactory = {
+    if (_pmf == null || _pmf.isClosed()) {
+      _pmf = JDOHelper.getPersistenceManagerFactory("datastore.props").asInstanceOf[JDOPersistenceManagerFactory]
+    }
+    _pmf
+  }
   
   private[this] lazy val threadLocalPersistenceManager: ThreadLocal[ScalaPersistenceManager] =
     new ThreadLocal[ScalaPersistenceManager]()
   
-  def pm: ScalaPersistenceManager = {
+  def pm(): ScalaPersistenceManager = {
     if (threadLocalPersistenceManager.get() == null || threadLocalPersistenceManager.get().isClosed) {
       threadLocalPersistenceManager.set(newPm)
     }
     threadLocalPersistenceManager.get()
+  }
+  
+  def close() {
+    pmf.close()
   }
   
   def withTransaction[A](block: (ScalaPersistenceManager => A)): A = {
