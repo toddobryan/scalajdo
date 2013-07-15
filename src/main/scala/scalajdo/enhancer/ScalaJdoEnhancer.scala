@@ -11,6 +11,7 @@ import org.datanucleus.NucleusContext
 import org.datanucleus.ClassLoaderResolver
 import org.datanucleus.metadata.PersistenceUnitMetaData
 import org.datanucleus.metadata.ClassMetaData
+import org.datanucleus.enhancer.jdo.JDOClassEnhancer
 
 sealed abstract class EnhanceComponent
 case class ClassComponent(name: String, bytes: Array[Byte]) extends EnhanceComponent
@@ -30,8 +31,7 @@ class ScalaJdoEnhancer(val config: Config, val componentsToEnhance: Seq[EnhanceC
   }
   
   lazy val nucleusContext: NucleusContext = new NucleusContext("JDO", NucleusContext.ContextType.ENHANCEMENT, props)
-    
-  
+
   lazy val metadataMgr: MetaDataManager = {
     if (props != null) nucleusContext.getPersistenceConfiguration().setPersistenceProperties(props)
     nucleusContext.getMetaDataManager()
@@ -45,7 +45,7 @@ class ScalaJdoEnhancer(val config: Config, val componentsToEnhance: Seq[EnhanceC
     componentsToEnhance.flatMap(comp => comp match {
       case ClassComponent(name, bytes) => Seq() // TODO: finish
       case ClassFileComponent(files) => {
-        metadataMgr.loadClasses(files.map(_.getName).toArray, userClassLoader).toList
+        metadataMgr.loadClasses(files.map(f => JDOClassEnhancer.getClassNameForFileName(f.getCanonicalPath())).toArray, userClassLoader).toList
       }
       case MappingFileComponent(files) => {
         metadataMgr.loadMetadataFiles(files.map(_.getName).toArray, userClassLoader).toList
@@ -61,6 +61,11 @@ class ScalaJdoEnhancer(val config: Config, val componentsToEnhance: Seq[EnhanceC
   
   def getClassEnhancer(cmd: ClassMetaData, bytes: Array[Byte]) = {
     new ScalaJdoClassEnhancer(cmd, clr, metadataMgr, bytes)
+  }
+  
+  def enhanceClass(cmd: ClassMetaData, enhancer: ScalaJdoClassEnhancer, store: Boolean): Boolean = {
+    // TODO: really incomplete
+    enhancer.enhance()
   }
   
   def run() {
@@ -110,7 +115,7 @@ object ScalaJdoEnhancer extends App {
       val dir = conf.directory.get
       if (!dir.exists() || !dir.isDirectory()) {
         println(s"${dir.getName} is not a directory")
-        exit(1)
+        sys.exit(1)
       } else {
         componentsFromFiles(ClassUtils.getFilesForDirectory(dir))
       }
@@ -132,7 +137,9 @@ object ScalaJdoEnhancer extends App {
         else Seq(JarFileComponent(jarFiles))
     val classFileSeq = if (classFiles.isEmpty) Seq()
         else Seq(ClassFileComponent(classFiles))
-    mappingFileSeq ++ jarFileSeq ++ classFileSeq
+    val comps = mappingFileSeq ++ jarFileSeq ++ classFileSeq
+    println(comps)
+    comps
   }
 }
 
