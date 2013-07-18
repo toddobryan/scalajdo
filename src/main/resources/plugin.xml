@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<plugin>
+    <extension point="org.datanucleus.java_type">
+        <java-type name="scala.collection."
+            dfg="true" embedded="true"
+            converter-name="cn-string"/>
+    </extension>
+    <extension point="org.datanucleus.type_converter">
+        <type-converter name="cn-string" 
+            member-type="mydomain.model.ConvertedNumber" 
+            datastore-type="java.lang.String"
+            converter-class="mydomain.model.converters.CNConverter"/>
+    </extension>
+    <extension point="org.datanucleus.store_mapping">
+        <mapping java-type="mydomain.model.ConvertedNumber"
+            mapping-class="mydomain.model.converters.CNMapping"/>
+    </extension>        
+</plugin>
