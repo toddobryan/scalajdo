@@ -20,6 +20,11 @@ package object converters {
     def toDatastoreType(seq: Seq[T]): java.util.List[T] = seq.asJava
     def toMemberType(list: java.util.List[T]): Seq[T] = list.asScala
   }
+  
+  class ImmutableListConverter[T] extends TypeConverter[immutable.List[T], java.util.List[T]] {
+    def toDatastoreType(list: List[T]): java.util.List[T] = list.asJava
+    def toMemberType(list: java.util.List[T]): immutable.List[T] = list.asScala.toList
+  }
 
   class ImmutableMapConverter[K, V] extends TypeConverter[immutable.Map[K, V], java.util.Map[K, V]] {
     def toDatastoreType(map: immutable.Map[K, V]): java.util.Map[K, V] = map.asJava
