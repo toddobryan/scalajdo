@@ -5,6 +5,11 @@
 *.class
 *.log
 
+#added by me
+*.db
+logs/*
+.settings/
+
 # sbt specific
 dist/*
 target/
