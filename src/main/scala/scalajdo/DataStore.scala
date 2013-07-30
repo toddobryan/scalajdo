@@ -1,14 +1,16 @@
 package scalajdo
 import javax.jdo.JDOHelper
-
 import org.datanucleus.api.jdo.{JDOPersistenceManager, JDOPersistenceManagerFactory}
+import java.util.Properties
 
 object DataStore {
   private[this] var _pmf: JDOPersistenceManagerFactory = _
   
   def pmf(): JDOPersistenceManagerFactory = {
     if (_pmf == null || _pmf.isClosed()) {
-      _pmf = JDOHelper.getPersistenceManagerFactory("datastore.props").asInstanceOf[JDOPersistenceManagerFactory]
+      val props = new Properties()
+      props.put("datanucleus.PersistenceUnitName", "scalajdo.examples")
+      _pmf = JDOHelper.getPersistenceManagerFactory(props).asInstanceOf[JDOPersistenceManagerFactory]
     }
     _pmf
   }

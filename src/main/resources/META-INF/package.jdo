@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jdo xmlns="http://xmlns.jcp.org/xml/ns/jdo/jdo"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/jdo/jdo
+        http://xmlns.jcp.org/xml/ns/jdo/jdo_3_0.xsd" version="3.0">
+  <package name="scalajdo.examples">
+    <class name="ImmutableListExample"
+        identity-type="application"
+        objectid-class="int"
+        detachable="true">
+      <field name="_id"
+          persistence-modifier="persistent"
+          primary-key="true"
+          null-value="exception"
+          value-strategy="increment"/>
+      <field name="_words"
+          persistence-modifier="persistent"
+          default-fetch-group="true"
+          embedded="false"
+          serialized="false"
+          field-type="java.util.Collection">
+          <join/>
+          <collection element-type="java.lang.String"
+              embedded-element="false"
+              dependent-element="true"
+              serialized-element="false"/>
+      </field>
+    </class>
+  </package>    
+</jdo>

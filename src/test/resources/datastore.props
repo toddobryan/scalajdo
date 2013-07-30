@@ -1,6 +1,6 @@
 javax.jdo.PersistenceManagerFactoryClass=org.datanucleus.api.jdo.JDOPersistenceManagerFactory
 
 datanucleus.ConnectionDriverName=org.h2.Driver
-datanucleus.ConnectionURL=jdbc:h2:data
+datanucleus.ConnectionURL=jdbc:h2:data;MVCC=true;AUTO_SERVER=true
 datanucleus.autoCreateSchema=true
 datanucleus.autoCreateColumns=true
