@@ -1,9 +1,21 @@
 package scalajdo
 
+import java.io.File
+
 import org.scalatest.FunSuite
+import org.scalatest.BeforeAndAfterAll
 import scalajdo.examples.{ ImmutableListExample, QImmutableListExample }
 
-class ImmutableListExampleTest extends FunSuite {
+class ImmutableListExampleTest extends FunSuite with BeforeAndAfterAll {
+  override def beforeAll() {
+    val db: File = new File("data.h2.db")
+    if (db.exists) db.delete()
+  }
+  
+  override def afterAll() {
+    DataStore.close()
+  }
+  
   test("putting objects in db") {
     DataStore.withTransaction { pm =>
       val l1 = new ImmutableListExample(List("once", "upon", "a", "time"))

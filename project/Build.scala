@@ -71,6 +71,9 @@ object ScalaJdoBuild extends Build {
     organizationName := "duPont Manual High School",
     version := "0.1-SNAPSHOT",
     scalaVersion := "2.10.2",
+    parallelExecution in Test := false,
+    testOptions in Test += Tests.Argument("-oDF"),
+    fork in Test := true,
     libraryDependencies ++= dependencies
   ) 
   

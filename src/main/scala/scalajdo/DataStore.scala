@@ -24,7 +24,13 @@ object DataStore {
   }
   
   def close() {
+    if (!pm.isClosed) {
+      if (pm.currentTransaction.isActive) pm.commitTransaction()
+      pm.close()
+    }
     pmf.close()
+    threadLocalPersistenceManager.set(null)
+    _pmf = null
   }
   
   def withTransaction[A](block: (ScalaPersistenceManager => A)): A = {
