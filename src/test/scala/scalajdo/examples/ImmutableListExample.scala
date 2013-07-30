@@ -1,16 +1,23 @@
 package scalajdo.examples
 
+import javax.jdo.annotations._
 import scala.collection.JavaConverters._
 import org.datanucleus.query.typesafe._
 import org.datanucleus.api.jdo.query._
 
+@PersistenceCapable(detachable="true")
 class ImmutableListExample {
+  @PrimaryKey
+  @Persistent(valueStrategy=IdGeneratorStrategy.INCREMENT)
   var _id: Int = _
   def id: Int = _id
 
-  var _words: List[String] = _
-  def words: List[String] = _words
-  def words_=(newValue: List[String]) { this._words = newValue }
+  @Persistent
+  @Join
+  @Element(types=Array(classOf[String]))
+  var _words: java.util.List[String] = _
+  def words: List[String] = _words.asScala.toList
+  def words_=(newValue: List[String]) { this._words = newValue.asJava }
   
   def this(words: List[String]) = {
     this()

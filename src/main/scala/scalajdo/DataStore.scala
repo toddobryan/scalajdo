@@ -6,11 +6,9 @@ import java.util.Properties
 object DataStore {
   private[this] var _pmf: JDOPersistenceManagerFactory = _
   
-  def pmf(): JDOPersistenceManagerFactory = {
+  def pmf: JDOPersistenceManagerFactory = {
     if (_pmf == null || _pmf.isClosed()) {
-      val props = new Properties()
-      props.put("datanucleus.PersistenceUnitName", "scalajdo.examples")
-      _pmf = JDOHelper.getPersistenceManagerFactory(props).asInstanceOf[JDOPersistenceManagerFactory]
+      _pmf = JDOHelper.getPersistenceManagerFactory("datastore.props").asInstanceOf[JDOPersistenceManagerFactory]
     }
     _pmf
   }

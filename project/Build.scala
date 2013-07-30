@@ -3,32 +3,83 @@ import Keys._
 
 import java.io.File
 
-object ApplicationBuild extends Build {
-  val appName = "scalajdo"
+
+object ScalaJdoBuild extends Build {
+  val dependencies = Seq(
+    "org.scala-lang" % "scala-reflect" % "2.10.2",
+    "org.datanucleus" % "datanucleus-core" % "3.2.5",
+    "org.datanucleus" % "datanucleus-rdbms" % "3.2.4",
+    "org.datanucleus" % "datanucleus-api-jdo" % "3.2.4",
+    "org.datanucleus" % "datanucleus-jdo-query" % "3.0.2",
+    "javax.jdo" % "jdo-api" % "3.0.1",
+    "javax.transaction" % "jta" % "1.1",
+    "org.scalatest" % "scalatest_2.10" % "2.0.M5b" % "test",
+    "log4j" % "log4j" % "1.2.17" % "test",
+    "com.h2database" % "h2" % "1.3.172" % "test"  
+  )
+  
+  val publishing = Seq(
+    publishMavenStyle := true,
+    publishTo <<= version { (v: String) =>
+      val nexus = "https://oss.sonatype.org/"
+      if (v.trim.endsWith("SNAPSHOT")) {
+        Some("snapshots" at nexus + "content/repositories/snapshots")
+      } else {
+        Some("releases" at nexus + "service/local/staging/deploy/maven2")
+      }
+    },
+    publishArtifact in Test := false,
+    credentials += Credentials(Path.userHome / ".ssh" / ".credentials"),
+    pomExtra := (
+      <url>http://dupontmanual.github.io/dm-forms</url>
+	  <licenses>
+        <license>
+          <name>Apache 2</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+      </licenses>
+      <scm>
+        <url>git://github.com/dupontmanual/scalajdo.git</url>
+        <connection>scm:git://github.com/dupontmanual/scalajdo.git</connection>
+      </scm>
+      <organization>
+        <name>duPont Manual High School Computer Science Department</name>
+        <url>http://dupontmanual.github.io/</url>
+      </organization>
+      <developers>
+        <developer>
+          <name>Allen Boss</name>
+          <roles>
+            <role>Student, Class of 2013</role>
+          </roles>
+        </developer>
+        <developer>
+          <name>Todd O'Bryan</name>
+          <roles>
+            <role>Teacher</role>
+          </roles>
+        </developer>
+      </developers>
+    )
+  )
+  
+  val buildSettings = Defaults.defaultSettings ++ Seq(
+    name := "Scala JDO",
+    normalizedName := "scalajdo",
+    description := "a project to simplify use of the DataNucleus JDO library from Scala",
+    organization := "org.dupontmanual",
+    organizationName := "duPont Manual High School",
+    version := "0.1-SNAPSHOT",
+    scalaVersion := "2.10.2",
+    libraryDependencies ++= dependencies
+  ) 
   
   lazy val scalajdo = Project(
-      appName, 
+      "scalajdo", 
       file("."),
-      settings = Defaults.defaultSettings ++ Seq(
-          organization := "dupontmanual",
-          version := "0.1",
-          scalaVersion := "2.10.2",
-          javacOptions ++= Seq("-source", "1.6", "-target", "1.6", "-bootclasspath", "/usr/lib/jvm/java-6-oracle/jre/lib/rt.jar"),
-          scalacOptions ++= Seq("-deprecation", "-feature"),
-          libraryDependencies ++= Seq(
-              "org.scala-lang" % "scala-library" % "2.10.2",
-              "org.scala-lang" % "scala-reflect" % "2.10.2",
-              //"org.datanucleus" % "datanucleus-core" % "3.2.3",
-              //"org.datanucleus" % "datanucleus-rdbms" % "3.2.3",
-              //"org.datanucleus" % "datanucleus-api-jdo" % "3.2.3",
-              "org.datanucleus" % "datanucleus-jdo-query" % "3.0.2",
-              //"javax.jdo" % "jdo-api" % "3.0.1",
-              "javax.transaction" % "jta" % "1.1",
-              "org.scalatest" % "scalatest_2.10" % "2.0.M5b" % "test",
-              "log4j" % "log4j" % "1.2.17" % "test",
-              "com.h2database" % "h2" % "1.3.172" % "test"
-          )
-      ) ++ Nucleus.settings
+      settings = buildSettings ++
+        publishing ++ 
+        Nucleus.settings
   )
 }
 
