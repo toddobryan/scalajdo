@@ -1,15 +1,23 @@
 package scalajdo
 
 import java.io.File
-
+import scala.collection.JavaConverters._
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfterAll
 import scalajdo.examples.{ ImmutableListExample, QImmutableListExample }
+import org.datanucleus.store.schema.SchemaAwareStoreManager
+import java.util.Properties
+import org.datanucleus.api.jdo.JDOPersistenceManagerFactory
+import javax.jdo.JDOHelper
 
 class ImmutableListExampleTest extends FunSuite with BeforeAndAfterAll {
+  object DataStore extends DataStore(() => JDOHelper.getPersistenceManagerFactory("scalajdo.examples").asInstanceOf[JDOPersistenceManagerFactory])
+  
   override def beforeAll() {
-    val db: File = new File("data.h2.db")
-    if (db.exists) db.delete()
+    val classes = DataStore.persistentClasses.asJava
+    val props = new Properties()
+    DataStore.storeManager.deleteSchema(classes, props)
+    DataStore.storeManager.createSchema(classes, props)
   }
   
   override def afterAll() {

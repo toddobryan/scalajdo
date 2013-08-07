@@ -3,7 +3,6 @@ import Keys._
 
 import java.io.File
 
-
 object ScalaJdoBuild extends Build {
   val dependencies = Seq(
     "org.scala-lang" % "scala-reflect" % "2.10.2",
@@ -73,7 +72,7 @@ object ScalaJdoBuild extends Build {
     scalaVersion := "2.10.2",
     parallelExecution in Test := false,
     testOptions in Test += Tests.Argument("-oDF"),
-    fork in Test := true,
+    //fork in Test := true,
     libraryDependencies ++= dependencies
   ) 
   
