@@ -5,6 +5,8 @@ import java.io.File
 
 object ScalaJdoBuild extends Build {
   val dependencies = Seq(
+    "ch.qos.logback" % "logback-classic" % "1.0.13",
+    "org.slf4j" % "log4j-over-slf4j" % "1.7.5",
     "org.scala-lang" % "scala-reflect" % "2.10.2",
     "org.datanucleus" % "datanucleus-core" % "3.2.6",
     "org.datanucleus" % "datanucleus-rdbms" % "3.2.5",
@@ -13,7 +15,6 @@ object ScalaJdoBuild extends Build {
     "javax.jdo" % "jdo-api" % "3.0.1",
     "javax.transaction" % "jta" % "1.1",
     "org.scalatest" % "scalatest_2.10" % "2.0.M5b" % "test",
-    "log4j" % "log4j" % "1.2.17" % "test",
     "com.h2database" % "h2" % "1.3.172" % "test"  
   )
   
@@ -81,7 +82,8 @@ object ScalaJdoBuild extends Build {
       file("."),
       settings = buildSettings ++
         publishing ++ 
-        Nucleus.settings
+        Nucleus.settings ++
+        net.virtualvoid.sbt.graph.Plugin.graphSettings
   )
 }
 
@@ -110,7 +112,7 @@ object Nucleus {
     // add more parameters as your see fit
     //enhance in Config <<= (fullClasspath in Config, runner, streams).map{(cp, run, s) =>
      */
-    enhance <<= Seq(compile in Compile).dependOn,
+    enhance <<= Seq(compile in Test).dependOn,
     enhance in Config <<= (fullClasspath in Test, runner, streams) map { (cp, run, s) => 
       val options = Seq("-v", "-pu", "scalajdo.examples")
       val result = run.run("org.datanucleus.enhancer.DataNucleusEnhancer", cp.files, options, s.log)

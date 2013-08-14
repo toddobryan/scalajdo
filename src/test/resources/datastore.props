@@ -1,3 +1,0 @@
-javax.jdo.PersistenceManagerFactoryClass=org.datanucleus.api.jdo.JDOPersistenceManagerFactory
-
-datanucleus.PersistenceUnitName=scalajdo.examples

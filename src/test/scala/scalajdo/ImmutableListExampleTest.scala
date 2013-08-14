@@ -9,11 +9,12 @@ import org.datanucleus.store.schema.SchemaAwareStoreManager
 import java.util.Properties
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory
 import javax.jdo.JDOHelper
+import org.apache.log4j.Logger
 
 class ImmutableListExampleTest extends FunSuite with BeforeAndAfterAll {
   object DataStore extends DataStore(() => JDOHelper.getPersistenceManagerFactory("scalajdo.examples").asInstanceOf[JDOPersistenceManagerFactory])
   
-  override def beforeAll() {
+  override def beforeAll() {    
     val classes = DataStore.persistentClasses.asJava
     val props = new Properties()
     DataStore.storeManager.deleteSchema(classes, props)
