@@ -43,10 +43,15 @@ class DataStore(val pmfGetter: () => JDOPersistenceManagerFactory) {
   
   def withTransaction[A](block: (ScalaPersistenceManager => A)): A = {
     implicit val pm: ScalaPersistenceManager = this.pm
-    pm.beginTransaction()
-    val r = block(pm)
-    pm.commitTransaction()
-    r
+    try {
+      pm.beginTransaction()
+      val r = block(pm)
+      pm.commitTransaction()
+      r
+    } finally {
+      if (pm.currentTransaction.isActive()) pm.currentTransaction.rollback()
+      pm.close()
+    }
   }
 
   def execute[A](block: (ScalaPersistenceManager => A)): A = {

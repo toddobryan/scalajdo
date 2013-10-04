@@ -8,13 +8,13 @@ object ScalaJdoBuild extends Build {
     "ch.qos.logback" % "logback-classic" % "1.0.13",
     "org.slf4j" % "log4j-over-slf4j" % "1.7.5",
     "org.scala-lang" % "scala-reflect" % "2.10.2",
-    "org.datanucleus" % "datanucleus-core" % "3.2.6",
-    "org.datanucleus" % "datanucleus-rdbms" % "3.2.5",
+    "org.datanucleus" % "datanucleus-core" % "3.2.7",
+    "org.datanucleus" % "datanucleus-rdbms" % "3.2.6",
     "org.datanucleus" % "datanucleus-api-jdo" % "3.2.4",
     "org.datanucleus" % "datanucleus-jdo-query" % "3.0.2",
     "javax.jdo" % "jdo-api" % "3.0.1",
     "javax.transaction" % "jta" % "1.1",
-    "org.scalatest" % "scalatest_2.10" % "2.0.M5b" % "test",
+    "org.scalatest" %% "scalatest" % "2.0.M8" % "test",
     "com.h2database" % "h2" % "1.3.172" % "test"  
   )
   

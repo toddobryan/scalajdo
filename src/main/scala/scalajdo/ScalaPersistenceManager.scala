@@ -4,6 +4,7 @@ import scala.collection.JavaConverters._
 import javax.jdo.{Extent, Query}
 import org.datanucleus.api.jdo.JDOPersistenceManager
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory
+import javax.jdo.JDOUserException
 
 class ScalaPersistenceManager(val jpm: JDOPersistenceManager) {
   def beginTransaction() {
